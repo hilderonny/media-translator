@@ -1,17 +1,27 @@
 # Zeigt eine GUI an, in der man Audio- oder Videodateien transkribieren
 # und ein Ergebnisprotokoll speichern kann.
 
-VERSION = "1.0.0"
+METADATA = {
+    "PROGRAM_VERSION": "1.1.0",
+    "FASTER_WHISPER_MODEL_VERSIONS": {
+        "base": "515102184abb526d1cfb9c882107192588d7250a",
+        "large-v2": "f541c54c566e32dc1fbce16f98df699208837e8b",
+        "medium": "8701f851d407f3f47e091bb13b8dac5290c7f7fb",
+        "small": "5d893ce2670a964008e985702b2a0d63972fe5dc",
+        "tiny": "ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7"
+    },
+}
 
 import os
 import PySimpleGUI as sg
 import subprocess, os, platform
-import time
+import datetime
+import hashlib
 
 sg.theme("SystemDefault1")
 
 def TranslateAsync():
-    start_time = time.ctime()
+    start_time = datetime.datetime.utcnow()
     # Ausgabefenster leeren
     window["-OUTPUT-"].Update("")
     window["-PROGRESSBAR-"].UpdateBar(0)
@@ -73,24 +83,39 @@ def TranslateAsync():
         window["-OUTPUT-"].print(translation_full_text_de)
     window["-PROGRESSBAR-"].UpdateBar(5)
 
-    stop_time = time.ctime()
+    # Hashes berechnen
+    window["-OUTPUT-"].print("Berechne Hashes ...")
+    with open(file_path, "rb") as f:
+        md5_hash = hashlib.file_digest(f, "md5").hexdigest()
+        sha1_hash = hashlib.file_digest(f, "sha1").hexdigest()
+        sha256_hash = hashlib.file_digest(f, "sha256").hexdigest()
+    window["-PROGRESSBAR-"].UpdateBar(6)
+
+    stop_time = datetime.datetime.utcnow()
+    duration = stop_time - start_time
 
     # Protokoll erstellen
     global protokoll
     protokoll = "\n".join([
         "Programminformationen",
         "=====================",
-        "Programm: simple-gui-transcription",
-        "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model,
-        "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model,
+        "Programm: MediaTranslator.pyw, Version " + METADATA["PROGRAM_VERSION"],
+        "Quelle: https://github.com/hilderonny/media-translator",
+        "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + METADATA["FASTER_WHISPER_MODEL_VERSIONS"][model] + ")",
+        "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + METADATA["FASTER_WHISPER_MODEL_VERSIONS"][model] + ")",
         "Übersetzung Englisch - Deutsch mit: Argos Translate, Version " + argos_translate_version,
+        "Gerät: CPU",
         "Die Transkription und Übersetzungen erfolgten segmentweise.",
         "",
         "Ergebnisse",
         "==========",
         "Datei: " + file_path,
-        "Beginn: " + start_time,
-        "Ende: " + stop_time,
+        "Beginn: " + start_time.isoformat(),
+        "Ende: " + stop_time.isoformat(),
+        "Dauer: " + str(duration),
+        "MD5 Hash: " + md5_hash,
+        "SHA-1 Hash: " + sha1_hash,
+        "SHA-256 Hash: " + sha256_hash,
         "Erkannte Sprache: " + original_language,
         "",
         "Originaltext",
@@ -123,7 +148,7 @@ layout = [
         sg.Button(button_text="Transkription starten", key="-STARTEN-", disabled=True)
     ],
     [
-        sg.ProgressBar(max_value=5, orientation="horizontal", size=(20, 20), key="-PROGRESSBAR-", expand_x=True)
+        sg.ProgressBar(max_value=6, orientation="horizontal", size=(20, 20), key="-PROGRESSBAR-", expand_x=True)
     ],
     [
         sg.Multiline(size=(45, 5), key="-OUTPUT-", expand_x=True, expand_y=True, font=("Courier New", 12))
@@ -134,7 +159,7 @@ layout = [
     ]
 ]
 
-window = sg.Window(title="Transkription und Übersetzung - " + VERSION, layout=layout, size=(1000,800), resizable=True, element_justification="center")
+window = sg.Window(title="Transkription und Übersetzung - " + METADATA["PROGRAM_VERSION"], layout=layout, size=(1000,800), resizable=True, element_justification="center")
 
 protokoll = ""
 

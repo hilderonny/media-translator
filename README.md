@@ -2,6 +2,8 @@
 
 Mit diesem Tool kann man Audio- und Videodateien transkribieren und den Text ins Deutsche übersetzen.
 
+[Hier geht es zu den Release Notes](RELEASENOTES.md)
+
 ## Einrichtung der Entwicklungsumgebung
 
 Zuerst muss Python mit der Version 3.11.6 (neuere Versionen haben ein Problem mit der Installation von faster-whisper) mit der Erweiterung "TCL/TK" installiert werden. https://www.python.org/downloads/windows/
@@ -20,6 +22,8 @@ Die Transkription und Übersetzung ins Englische erfolgt über [Faster Whisper](
 ```
 pip install faster-whisper
 ```
+
+**Faster Whisper benutzt intern CTranslate2. Dieses wiederum benötigt die [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-US/download/details.aspx?id=48145), welche vor dem ersten Start installiert werden muss.**
 
 Für die Übersetzung von Englisch nach Deutsch wird [Argos Translate](https://github.com/argosopentech/argos-translate) benutzt.
 
@@ -56,3 +60,10 @@ Für Argos Translate müssen die Modelle vorab geladen werden:
 ```
 python ./download_argos_models.py
 ```
+
+## Metadaten für Protokoll aktualisieren
+
+Damit im Protokoll stets die korrekten Versionsinformationen enthalten sind, müssen diese in `MediaTranslator.pyw` im Objekt `METADATA` gepflegt werden.
+
+1. **PROGRAM_VERSION** : Das ist die Versionsnummer des Programms selbst. Diese muss vor jeder Kompilierung bzw. vor jedem Release hochgesetzt werden.
+2. **FASTER_WHISPER_MODEL_####_VERSION** : Snapshot-ID des jeweiligen Modells. Ergibt sich aus dem Verzeichnisnamen unterhalb `snapshots`, in dem das Modell abgespeichert ist. Muss manuell geändert werden, sobald ein Modell heruntergeladen oder aktualisiert wird.
