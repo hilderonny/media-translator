@@ -8,19 +8,36 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  build_release:
+    name: Build Release
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Package Application
-      uses: JackMcKew/pyinstaller-action-windows@main
-      with:
-        path: MediaTranslator.pyw
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: MediaTranslator.exe
-        path: dist/windows
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Package Application
+        uses: JackMcKew/pyinstaller-action-windows@main
+        with:
+          path: ./
+      - name: Determine version
+        run: echo "::set-output name=version::$(python ./MediaTranslator.pyw --version)"
+        id: version
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/windows/MediaTranslator.exe
+          asset_name: MediaTranslator.exe
+          asset_content_type: application/vnd.microsoft.portable-executable

@@ -2,7 +2,7 @@
 
 Mit diesem Tool kann man Audio- und Videodateien transkribieren und den Text ins Deutsche übersetzen.
 
-[Hier geht es zu den Release Notes](RELEASENOTES.md)
+[Hier geht es zu den Release Notes](CHANGELOG.md)
 
 ## Einrichtung der Entwicklungsumgebung
 
