@@ -4,6 +4,8 @@ Mit diesem Tool kann man Audio- und Videodateien transkribieren und den Text ins
 
 [Hier geht es zu den Release Notes](CHANGELOG.md)
 
+[![Package Application with Pyinstaller](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml/badge.svg)](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml)
+
 ## Einrichtung der Entwicklungsumgebung
 
 Zuerst muss Python mit der Version 3.11.6 (neuere Versionen haben ein Problem mit der Installation von faster-whisper) mit der Erweiterung "TCL/TK" installiert werden. https://www.python.org/downloads/windows/

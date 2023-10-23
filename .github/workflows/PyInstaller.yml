@@ -25,6 +25,10 @@ jobs:
       - name: Determine version
         run: echo "::set-output name=version::$(python ./MediaTranslator.pyw --version)"
         id: version
+      - name: Create executable
+        run: pyinstaller -w ./MediaTranslator.pyw
+      - name: Zip Folder
+        run: Compress-Archive -Path ./dist/MediaTranslator/* -DestinationPath ./MediaTranslator.zip
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
@@ -36,10 +40,6 @@ jobs:
           body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Create executable
-        run: pyinstaller -w ./MediaTranslator.pyw
-      - name: Zip Folder
-        run: Compress-Archive -Path ./dist/MediaTranslator/ -DestinationPath ./MediaTranslator.zip
       - name: Upload artifacts
         uses: actions/upload-release-asset@v1
         env:
