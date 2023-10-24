@@ -2,7 +2,7 @@
 # und ein Ergebnisprotokoll speichern kann.
 
 METADATA = {
-    "PROGRAM_VERSION": "1.2.0"
+    "PROGRAM_VERSION": "1.2.1"
 }
 
 import os
@@ -84,7 +84,10 @@ def TranslateAsync():
     # Ins Englische übersetzen
     if original_language == "en":
         translation_segments_en = transcribe_segments
-    elif original_language != "de":
+        translation_full_text_en = " ".join(map(lambda segment: segment["text"], translation_segments_en))
+    elif original_language == "de":
+        translation_full_text_en = ""
+    else:
         window["-OUTPUT-"].print("Übersetze ins Englische ...")
         translation_segments_generator_en, _ = faster_whisper_model.transcribe(file_path, task = "translate")
         translation_segments_en = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text }, translation_segments_generator_en))
@@ -93,10 +96,12 @@ def TranslateAsync():
     window["-PROGRESSBAR-"].UpdateBar(4)
 
     # Ins Deutsche übersetzen
-    if original_language != "de":
+    if original_language == "de":
+        translation_full_text_de = " ".join(map(lambda segment: segment["text"], transcribe_segments))
+    else:
         window["-OUTPUT-"].print("Übersetze ins Deutsche ...")
         translation_segments_de = list(map(lambda segment: { "start": segment["start"], "end": segment["end"], "text": argos_translation.translate(segment["text"]) }, translation_segments_en))
-        translation_full_text_de  =" ".join(map(lambda segment: segment["text"], translation_segments_de))
+        translation_full_text_de = " ".join(map(lambda segment: segment["text"], translation_segments_de))
         window["-OUTPUT-"].print(translation_full_text_de)
     window["-PROGRESSBAR-"].UpdateBar(5)
 

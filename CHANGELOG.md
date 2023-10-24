@@ -1,5 +1,8 @@
 # Änderungshistorie
 
+## 1.2.1
+- Fehler bei Transkription englischer und deutscher Quelldateien behoben
+
 ## 1.2.0
 - Umleitung der Debug-Ausgaben in /log/-Datei
 - Argos Translate lädt fehlende Modelle nach
