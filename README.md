@@ -2,7 +2,7 @@
 
 Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren und den Text ins Deutsche übersetzen.
 
-TODO: Screenshot einfügen
+![](images/application.png)
 
 [Download](https://github.com/hilderonny/media-translator/releases)
 
