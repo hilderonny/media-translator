@@ -2,7 +2,7 @@
 # und ein Ergebnisprotokoll speichern kann.
 
 METADATA = {
-    "PROGRAM_VERSION": "1.1.1",
+    "PROGRAM_VERSION": "1.2.0",
     "FASTER_WHISPER_MODEL_VERSIONS": {
         "base": "515102184abb526d1cfb9c882107192588d7250a",
         "large-v2": "f541c54c566e32dc1fbce16f98df699208837e8b",
@@ -21,23 +21,44 @@ import sys, getopt
 
 sg.theme("SystemDefault1")
 
+class Logger(object):
+
+    def __init__(self, text_field):
+        self.text_field = text_field
+
+    def write(self, buf):
+        for line in buf.rstrip().splitlines():
+            try:
+                # Beim Beenden gibt es das Fenster nicht mehr, daher kann es zu einer Exception kommen
+                self.text_field.print(line.rstrip())
+            finally:
+                pass
+
+    def flush(object):
+        pass
+
+def GetSelectedModel():
+    global values
+    if values["-MODELTINY-"]:
+        return "tiny"
+    elif values["-MODELSMALL-"]:
+        return "small"
+    elif values["-MODELBASE-"]:
+        return "base"
+    elif values["-MODELMEDIUM-"]:
+        return "medium"
+    elif values["-MODELLARGEV2-"]:
+        return "large-v2"
+
 def TranslateAsync():
     global window, values, protokoll
+    # Prüfen, ob selektiertes Modell bereits vorhanden ist, andernfalls Internethinweis anzeigen
     start_time = datetime.datetime.utcnow()
     # Ausgabefenster leeren
     window["-OUTPUT-"].Update("")
     window["-PROGRESSBAR-"].UpdateBar(0)
     # Faster Whisper laden
-    if values["-MODELTINY-"]:
-        model = "tiny"
-    elif values["-MODELSMALL-"]:
-        model = "small"
-    elif values["-MODELBASE-"]:
-        model = "base"
-    elif values["-MODELMEDIUM-"]:
-        model = "medium"
-    elif values["-MODELLARGEV2-"]:
-        model = "large-v2"
+    model = GetSelectedModel()
     window["-OUTPUT-"].print("Lade Faster Whisper mit Modell \"" + model +  "\" ...")
     from faster_whisper import WhisperModel, __version__
     faster_whisper_version = __version__
@@ -167,17 +188,45 @@ def main(argv):
             sg.FileSaveAs(button_text="Protokoll speichern unter ...", target="-SPEICHERN-", file_types=(("Text", ".txt"),))
         ]
     ]
-    window = sg.Window(title="Transkription und Übersetzung - " + METADATA["PROGRAM_VERSION"], layout=layout, size=(1000,800), resizable=True, element_justification="center")
+    window = sg.Window(title="Transkription und Übersetzung - " + METADATA["PROGRAM_VERSION"], layout=layout, size=(1000,800), resizable=True, element_justification="center", finalize=True)
+    # Konsolenausgabe umleiten
+    old_stout = sys.stdout
+    old_stderr = sys.stderr
+    sys.stdout = Logger(window["-OUTPUT-"])
+    sys.stderr = sys.stdout
+
+    # Prüfen, ob Modelle für Argos Translate vorhanden sind
+    if not os.path.isdir("./data/argos-translate/packages/en_de"):
+        sg.popup_ok("Übersetzungsdaten müssen heruntergeladen werden. Stellen Sie sicher, dass dafür eine Internetverbindung besteht!", title="Fehlende Übersetzungsdaten")
+        os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
+        import argostranslate.package
+        argostranslate.package.update_package_index()
+        available_packages = argostranslate.package.get_available_packages()
+        available_package = list(
+            filter(
+                lambda x: x.from_code == "en" and x.to_code == "de", available_packages
+            )
+        )[0]
+        download_path = available_package.download()
+        argostranslate.package.install_from_path(download_path)
+        window["-OUTPUT-"].print("Übersetzungsdaten heruntergeladen.")
+
     protokoll = ""
     while True:
         event, values = window.read()
-        print(event)
         if event == sg.WIN_CLOSED:
+            sys.stdout = old_stout
+            sys.stderr = old_stderr
             break
         elif event == "-FILENAME-":
             window["-STARTEN-"].Update(disabled=False)
         elif event == "-STARTEN-":
-            window["-OUTPUT-"].print("Gestartet!")
+            model = GetSelectedModel()
+            if not os.path.isdir("./data/faster-whisper/models--guillaumekln--faster-whisper-" + model):
+                file_sizes = { "tiny" : "75 MB", "base" : "141 MB", "small" : "463 MB", "medium" : "1,5 GB", "large-v2" : "2,9 GB" }
+                choice = sg.popup_ok_cancel("Das Whisper-Modell \"" + model + "\" muss heruntergeladen werden. Stellen Sie sicher, dass dafür eine Internetverbindung besteht! Dieser Vorgang gang je nach Modell eine Weile dauern (" + file_sizes[model] + ")", title="Fehlendes Whisper-Modell")
+                if choice!="OK":
+                    continue
             window.perform_long_operation(func=TranslateAsync, end_key="-TRANSLATIONDONE-")
         elif event == "-SPEICHERN-":
             file_path = values["-SPEICHERN-"]

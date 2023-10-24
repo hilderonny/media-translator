@@ -1,5 +1,10 @@
 # Änderungshistorie
 
+## 1.2.0
+- Umleitung der Debug-Ausgaben in /log/-Datei
+- Argos Translate lädt fehlende Modelle nach
+- Bei fehlenden KI-Modellen wird Hinweis auf benötigte Internetverbindung angezeigt
+
 ## 1.1.1
 - Update auf Argos Translate 1.9.1
 - Konfiguration für PyInstaller GitHub Action erstellt

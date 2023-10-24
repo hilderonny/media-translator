@@ -1,10 +1,24 @@
 # media-translator
 
-Mit diesem Tool kann man Audio- und Videodateien transkribieren und den Text ins Deutsche übersetzen.
+Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren und den Text ins Deutsche übersetzen.
 
-[Hier geht es zu den Release Notes](CHANGELOG.md)
+TODO: Screenshot einfügen
 
-[![Package Application with Pyinstaller](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml/badge.svg)](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml)
+[Download](https://github.com/hilderonny/media-translator/releases)
+
+[![Building release](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml/badge.svg)](https://github.com/hilderonny/media-translator/actions/workflows/PyInstaller.yml)
+
+## Benutzung
+
+Einfach die neueste ZIP-Datei von [hier](https://github.com/hilderonny/media-translator/releases) herunterladen, entpacken und die Datei **MediaTranslator.exe** ausführen. Das Programm ebnötigt keine Installation.
+
+**Achtung:** Beim ersten Programmstart sowie beim Auswählen der Whisper-Modelle müssen ggf. KI-Modelle aus dem Internet geladen werden (bis zu 3 GB). Bei allen weiteren Ausführungen ist keine Internetverbindung mehr notwendig. Die KI-Modelle werdenn dann aus dem Unterverzeichnis `data` geladen. Für eine vollständige Offline-Version führen Sie am Besten testhalber kurze Transkriptionen mit jedem Modell bei bestehender Internetverbindung durch.
+
+Wenn das Programm läuft, wählt man eine Datei und ein Whisper-Modell aus (Small sollte für den Anfang ganz gut sein) und startet die Transkription.
+
+Je nach Länge der Audiodatei kann die Transkription eine Weile dauern. Für 1 Minute Audio kann mit etwa 2 Minuten Verarbeitungszeit gerechnet werden.
+
+Nach Abschluss wird im Anwendungsfenster ein Protokoll der Transkription angezeigt, welches in einer Textdatei gespeichert werden kann.
 
 ## Einrichtung der Entwicklungsumgebung
 
