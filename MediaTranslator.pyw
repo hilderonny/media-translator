@@ -2,14 +2,7 @@
 # und ein Ergebnisprotokoll speichern kann.
 
 METADATA = {
-    "PROGRAM_VERSION": "1.2.0",
-    "FASTER_WHISPER_MODEL_VERSIONS": {
-        "base": "515102184abb526d1cfb9c882107192588d7250a",
-        "large-v2": "f541c54c566e32dc1fbce16f98df699208837e8b",
-        "medium": "8701f851d407f3f47e091bb13b8dac5290c7f7fb",
-        "small": "5d893ce2670a964008e985702b2a0d63972fe5dc",
-        "tiny": "ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7"
-    },
+    "PROGRAM_VERSION": "1.2.0"
 }
 
 import os
@@ -63,7 +56,8 @@ def TranslateAsync():
     from faster_whisper import WhisperModel, __version__
     faster_whisper_version = __version__
     faster_whisper_model = WhisperModel( model_size_or_path = model, device = "cpu", compute_type = "int8", download_root="./data/faster-whisper/" )
-    window["-OUTPUT-"].print("Faster Whisper Version " + faster_whisper_version + " geladen.")
+    faster_whisper_model_version = os.listdir("./data/faster-whisper/models--guillaumekln--faster-whisper-" + model + "/snapshots")[0]
+    window["-OUTPUT-"].print("Faster Whisper Version " + faster_whisper_version + " (Modellversion " + faster_whisper_model_version + ") geladen.")
     window["-PROGRESSBAR-"].UpdateBar(1)
 
     # Argos Translate laden
@@ -124,8 +118,8 @@ def TranslateAsync():
         "=====================",
         "Programm: MediaTranslator.pyw, Version " + METADATA["PROGRAM_VERSION"],
         "Quelle: https://github.com/hilderonny/media-translator",
-        "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + METADATA["FASTER_WHISPER_MODEL_VERSIONS"][model] + ")",
-        "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + METADATA["FASTER_WHISPER_MODEL_VERSIONS"][model] + ")",
+        "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
+        "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
         "Übersetzung Englisch - Deutsch mit: Argos Translate, Version " + argos_translate_version,
         "Gerät: CPU",
         "Die Transkription und Übersetzungen erfolgten segmentweise.",

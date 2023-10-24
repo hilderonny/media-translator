@@ -4,6 +4,7 @@
 - Umleitung der Debug-Ausgaben in /log/-Datei
 - Argos Translate lädt fehlende Modelle nach
 - Bei fehlenden KI-Modellen wird Hinweis auf benötigte Internetverbindung angezeigt
+- Modellversionen werden automatisch ermittelt
 
 ## 1.1.1
 - Update auf Argos Translate 1.9.1
