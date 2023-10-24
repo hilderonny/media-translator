@@ -10,7 +10,7 @@ Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren un
 
 ## Benutzung
 
-Einfach die neueste ZIP-Datei von [hier](https://github.com/hilderonny/media-translator/releases) herunterladen, entpacken und die Datei **MediaTranslator.exe** ausführen. Das Programm ebnötigt keine Installation.
+Einfach die neueste ZIP-Datei von [hier](https://github.com/hilderonny/media-translator/releases) herunterladen, entpacken und die Datei **MediaTranslator.exe** ausführen. Das Programm benötigt keine Installation.
 
 **Achtung:** Beim ersten Programmstart sowie beim Auswählen der Whisper-Modelle müssen ggf. KI-Modelle aus dem Internet geladen werden (bis zu 3 GB). Bei allen weiteren Ausführungen ist keine Internetverbindung mehr notwendig. Die KI-Modelle werdenn dann aus dem Unterverzeichnis `data` geladen. Für eine vollständige Offline-Version führen Sie am Besten testhalber kurze Transkriptionen mit jedem Modell bei bestehender Internetverbindung durch.
 
