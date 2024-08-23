@@ -12,6 +12,7 @@ import subprocess, os, platform
 import datetime
 import hashlib
 import sys, getopt
+from languagecodes import language_codes
 
 sg.theme("SystemDefault1")
 
@@ -88,7 +89,11 @@ def TranslateAsync():
     transcribe_segments = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text }, transcribe_segments_generator))
     transcribe_full_text  =" ".join(map(lambda segment: segment["text"], transcribe_segments))
     original_language = transcribe_info.language
-    window["-OUTPUT-"].print("Erkannte Sprache: " + original_language)
+    language_code_details = language_codes[original_language]
+    language_details = original_language
+    if language_code_details:
+        language_details = original_language + " (" + language_code_details["Name"] + " - " + language_code_details["Source"] + ")"
+    window["-OUTPUT-"].print("Erkannte Sprache: " + language_details)
     window["-OUTPUT-"].print(transcribe_full_text)
     window["-PROGRESSBAR-"].UpdateBar(3)
 
@@ -132,7 +137,7 @@ def TranslateAsync():
     protokoll = "\n".join([
         "Programminformationen",
         "=====================",
-        "Programm: MediaTranslator.pyw, Version " + METADATA["PROGRAM_VERSION"],
+        "Programm: Media Translator, Version " + METADATA["PROGRAM_VERSION"],
         "Quelle: https://github.com/hilderonny/media-translator",
         "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
         "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
@@ -149,7 +154,7 @@ def TranslateAsync():
         "MD5 Hash: " + md5_hash,
         "SHA-1 Hash: " + sha1_hash,
         "SHA-256 Hash: " + sha256_hash,
-        "Erkannte Sprache: " + original_language,
+        "Erkannte Sprache: " + language_details,
         "",
         "Originaltext",
         "------------",

@@ -2,6 +2,9 @@
 
 ## 1.2.2
 - Verwendung von Grafikkarten implementiert
+- Sprachinformationen eingebaut
+- Anwendungstitel auf "Media Translator" geändert
+- Lizenz zu MIT License geändert
 
 ## 1.2.1
 - Fehler bei Transkription englischer und deutscher Quelldateien behoben
