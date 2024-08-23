@@ -203,7 +203,7 @@ def main(argv):
             sg.FileSaveAs(button_text="Protokoll speichern unter ...", target="-SPEICHERN-", file_types=(("Text", ".txt"),))
         ]
     ]
-    window = sg.Window(title="Transkription und Übersetzung - " + METADATA["PROGRAM_VERSION"], layout=layout, size=(1000,800), resizable=True, element_justification="center", finalize=True)
+    window = sg.Window(title="Media Translator - " + METADATA["PROGRAM_VERSION"], layout=layout, size=(1000,800), resizable=True, element_justification="center", finalize=True)
     # Konsolenausgabe umleiten
     old_stout = sys.stdout
     old_stderr = sys.stderr
