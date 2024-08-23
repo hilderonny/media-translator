@@ -1,5 +1,8 @@
 # Änderungshistorie
 
+## 1.2.2
+- Verwendung von Grafikkarten implementiert
+
 ## 1.2.1
 - Fehler bei Transkription englischer und deutscher Quelldateien behoben
 

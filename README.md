@@ -10,7 +10,14 @@ Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren un
 
 ## Benutzung
 
-Einfach die neueste ZIP-Datei von [hier](https://github.com/hilderonny/media-translator/releases) herunterladen, entpacken und die Datei **MediaTranslator.exe** ausführen. Das Programm benötigt keine Installation.
+Unter [Releases](https://github.com/hilderonny/media-translator/releases) sind die aktuellsten Versionen des Programms zu finden. Laden Sie die Version herunter, die Ihren Ansprüchen genügt:
+
+|Dateiname|Beschreibung|
+|---|---|
+|`MediaTranslator_1.2.2.zip`|Inklusive CUDA Bibliotheken und GPU-Funktion|
+|`MediaTranslator_1.2.2_no_cudnn.zip`|Ohne CUDA Bibliotheken und ohne GPU-Funktion|
+
+ herunterladen, entpacken und die Datei **MediaTranslator.exe** ausführen. Das Programm benötigt keine Installation.
 
 **Achtung:** Beim ersten Programmstart sowie beim Auswählen der Whisper-Modelle müssen ggf. KI-Modelle aus dem Internet geladen werden (bis zu 3 GB). Bei allen weiteren Ausführungen ist keine Internetverbindung mehr notwendig. Die KI-Modelle werdenn dann aus dem Unterverzeichnis `data` geladen. Für eine vollständige Offline-Version führen Sie am Besten testhalber kurze Transkriptionen mit jedem Modell bei bestehender Internetverbindung durch.
 
@@ -63,7 +70,15 @@ pyinstaller -w MediaTranslator.pyw
 
 Dabei wird ein Verzeichnis `dist/MediaTranslator` erstellt, in dem die EXE-Datei abgelegt wird. Diese Datei ist dann portabel ausführbar, sofern alle anderen Dateien und Unterverzeichnisse vorhanden sind.
 
-In dieses Verzeichnis muss auch das `data` Verzeichnis mit den KI-Modellen kopiert werden, also nach `dist/data`.
+In dieses Verzeichnis muss auch das `data` Verzeichnis mit den KI-Modellen kopiert werden, also nach `dist/MediaTranslator/data`.
+
+Für die Verwendung der GPU müssen folgende Dateien in das Verzeichnis `dist/MediaTranslator/_internal_ctranslate2` kopiert werden:
+
+- `cudnn_ops_infer64_8.dll`
+- `zlibwapi.dll`
+- `cudnn_cnn_infer64_8.dll`
+- `cublasLt64_11.dll`
+- `cublas64_11.dll`
 
 ## KI Modelle herunterladen
 

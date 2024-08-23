@@ -2,10 +2,11 @@
 # und ein Ergebnisprotokoll speichern kann.
 
 METADATA = {
-    "PROGRAM_VERSION": "1.2.1"
+    "PROGRAM_VERSION": "1.2.2"
 }
 
 import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import PySimpleGUI as sg
 import subprocess, os, platform
 import datetime
@@ -43,6 +44,13 @@ def GetSelectedModel():
     elif values["-MODELLARGEV2-"]:
         return "large-v2"
 
+def GetSelectedDevice():
+    global values
+    if values["-DEVICECPU-"]:
+        return "cpu"
+    elif values["-DEVICEGPU-"]:
+        return "cuda"
+
 def TranslateAsync():
     global window, values, protokoll
     # Prüfen, ob selektiertes Modell bereits vorhanden ist, andernfalls Internethinweis anzeigen
@@ -52,10 +60,13 @@ def TranslateAsync():
     window["-PROGRESSBAR-"].UpdateBar(0)
     # Faster Whisper laden
     model = GetSelectedModel()
+    device = GetSelectedDevice()
+    devicename = "Grafikkarte" if device == "cuda" else "CPU"
+    window["-OUTPUT-"].print("Benutze " + devicename +  " zur Verarbeitung")
     window["-OUTPUT-"].print("Lade Faster Whisper mit Modell \"" + model +  "\" ...")
     from faster_whisper import WhisperModel, __version__
     faster_whisper_version = __version__
-    faster_whisper_model = WhisperModel( model_size_or_path = model, device = "cpu", compute_type = "int8", download_root="./data/faster-whisper/" )
+    faster_whisper_model = WhisperModel( model_size_or_path = model, device = device, compute_type = "int8", download_root="./data/faster-whisper/" )
     faster_whisper_model_version = os.listdir("./data/faster-whisper/models--guillaumekln--faster-whisper-" + model + "/snapshots")[0]
     window["-OUTPUT-"].print("Faster Whisper Version " + faster_whisper_version + " (Modellversion " + faster_whisper_model_version + ") geladen.")
     window["-PROGRESSBAR-"].UpdateBar(1)
@@ -63,7 +74,7 @@ def TranslateAsync():
     # Argos Translate laden
     window["-OUTPUT-"].print("Lade Argos Translate ...")
     os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
-    os.environ["ARGOS_DEVICE_TYPE"] = "cpu"
+    os.environ["ARGOS_DEVICE_TYPE"] = device
     import argostranslate.translate
     argos_translation = argostranslate.translate.get_translation_from_codes("en", "de")
     argos_translate_version = "1.8.1"
@@ -126,7 +137,7 @@ def TranslateAsync():
         "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
         "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
         "Übersetzung Englisch - Deutsch mit: Argos Translate, Version " + argos_translate_version,
-        "Gerät: CPU",
+        "Gerät: " + devicename,
         "Die Transkription und Übersetzungen erfolgten segmentweise.",
         "",
         "Ergebnisse",
@@ -172,6 +183,11 @@ def main(argv):
             sg.Radio(text="Small", group_id="MODELL", key="-MODELSMALL-", default=True),
             sg.Radio(text="Medium", group_id="MODELL", key="-MODELMEDIUM-"),
             sg.Radio(text="Large V2", group_id="MODELL", key="-MODELLARGEV2-")
+        ],
+        [
+            sg.Text(text="Gerät:"), 
+            sg.Radio(text="CPU", group_id="DEVICE", key="-DEVICECPU-", default=True),
+            sg.Radio(text="GPU", group_id="DEVICE", key="-DEVICEGPU-")
         ],
         [
             sg.Button(button_text="Transkription starten", key="-STARTEN-", disabled=True)
