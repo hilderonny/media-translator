@@ -72,7 +72,7 @@ Dabei wird ein Verzeichnis `dist/MediaTranslator` erstellt, in dem die EXE-Datei
 
 In dieses Verzeichnis muss auch das `data` Verzeichnis mit den KI-Modellen kopiert werden, also nach `dist/MediaTranslator/data`.
 
-Für die Verwendung der GPU müssen folgende Dateien in das Verzeichnis `dist/MediaTranslator/_internal_ctranslate2` kopiert werden:
+Für die Verwendung der GPU müssen folgende Dateien in das Verzeichnis `dist/MediaTranslator/_internal/ctranslate2` kopiert werden:
 
 - `cudnn_ops_infer64_8.dll`
 - `zlibwapi.dll`
