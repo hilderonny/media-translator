@@ -1,5 +1,63 @@
 # media-translator
 
+## Entwicklung
+
+Unter Windows 10/11 zuerst [Python 3.13.3](https://www.python.org/ftp/python/3.13.3/python-3.13.3-amd64.exe) installieren.
+Dabei Standard-Installation mit Admin Rechten und PATH-Angabe auswählen.
+Dann in das Repository-Verzeichnis wechseln und Kommandozeile öffnen.
+
+https://github.com/Purfview/whisper-standalone-win/releases/tag/libs
+
+Zu https://github.com/spyoungtech/FreeSimpleGUI gewechselt, weil PySimpleGUI closed source wurde.
+
+Um Sentencepiece mit Pathon 3.13 zum Laufen zu bringen, braucht man https://pypi.org/project/dbowring-sentencepiece/.
+
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install faster-whisper==1.1.1
+pip install FreeSimpleGUI==5.2.0
+pip install torch==2.7.0 --index-url https://download.pytorch.org/whl/cu118
+pip install transformers==4.51.3
+pip install langdetect==1.0.9
+pip install dbowring-sentencepiece==0.2.1
+```
+
+https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA12_win_v3.7z
+
+Die Dateien aus `dlls` nach `venv/Lib/ctranslate2` kopieren.
+
+
+
+Ok, folgende Abhängigkeiten herrschen:
+
+1. ctranslate2 funktioniert nur mit CUDA 11
+2. sentencepiece funktioniert nur mit Python <= 3.12
+
+Also verwende ich Python 3.12 von https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe.
+
+
+
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install faster-whisper==1.1.1
+pip install FreeSimpleGUI==5.2.0
+pip install torch==2.7.0 --index-url https://download.pytorch.org/whl/cu118
+pip install transformers==4.51.3
+pip install langdetect==1.0.9
+pip install dbowring-sentencepiece==0.2.1
+```
+
+https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA11_win_v4.7z
+
+
+
+
+
+
+
+
 Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren und den Text ins Deutsche übersetzen.
 
 ![](images/application.png)
@@ -72,7 +130,7 @@ Dabei wird ein Verzeichnis `dist/MediaTranslator` erstellt, in dem die EXE-Datei
 
 In dieses Verzeichnis muss auch das `data` Verzeichnis mit den KI-Modellen kopiert werden, also nach `dist/MediaTranslator/data`.
 
-Für die Verwendung der GPU müssen folgende Dateien in das Verzeichnis `dist/MediaTranslator/_internal_ctranslate2` kopiert werden:
+Für die Verwendung der GPU müssen folgende Dateien in das Verzeichnis `dist/MediaTranslator/_internal/ctranslate2` kopiert werden:
 
 - `cudnn_ops_infer64_8.dll`
 - `zlibwapi.dll`

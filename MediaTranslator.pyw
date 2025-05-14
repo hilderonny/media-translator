@@ -2,12 +2,13 @@
 # und ein Ergebnisprotokoll speichern kann.
 
 METADATA = {
-    "PROGRAM_VERSION": "1.2.2"
+    'PROGRAM_VERSION': '2.0.0'
 }
 
 import os
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-import PySimpleGUI as sg
+os.environ['HF_HOME'] = './data'
+# os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+import FreeSimpleGUI as sg
 import subprocess, os, platform
 import datetime
 import hashlib
@@ -68,19 +69,19 @@ def TranslateAsync():
     from faster_whisper import WhisperModel, __version__
     faster_whisper_version = __version__
     faster_whisper_model = WhisperModel( model_size_or_path = model, device = device, compute_type = "int8", download_root="./data/faster-whisper/" )
-    faster_whisper_model_version = os.listdir("./data/faster-whisper/models--guillaumekln--faster-whisper-" + model + "/snapshots")[0]
+    faster_whisper_model_version = os.listdir("./data/faster-whisper/models--Systran--faster-whisper-" + model + "/snapshots")[0]
     window["-OUTPUT-"].print("Faster Whisper Version " + faster_whisper_version + " (Modellversion " + faster_whisper_model_version + ") geladen.")
     window["-PROGRESSBAR-"].UpdateBar(1)
 
-    # Argos Translate laden
-    window["-OUTPUT-"].print("Lade Argos Translate ...")
-    os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
-    os.environ["ARGOS_DEVICE_TYPE"] = device
-    import argostranslate.translate
-    argos_translation = argostranslate.translate.get_translation_from_codes("en", "de")
-    argos_translate_version = "1.8.1"
-    window["-OUTPUT-"].print("Argos Translate Version " + argos_translate_version + " geladen.")
-    window["-PROGRESSBAR-"].UpdateBar(2)
+    # # Argos Translate laden
+    # window["-OUTPUT-"].print("Lade Argos Translate ...")
+    # os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
+    # os.environ["ARGOS_DEVICE_TYPE"] = device
+    # import argostranslate.translate
+    # argos_translation = argostranslate.translate.get_translation_from_codes("en", "de")
+    # argos_translate_version = "1.8.1"
+    # window["-OUTPUT-"].print("Argos Translate Version " + argos_translate_version + " geladen.")
+    # window["-PROGRESSBAR-"].UpdateBar(2)
 
     # Transkribieren
     window["-OUTPUT-"].print("Transkribiere ...")
@@ -98,28 +99,28 @@ def TranslateAsync():
     window["-PROGRESSBAR-"].UpdateBar(3)
 
     # Ins Englische übersetzen
-    if original_language == "en":
-        translation_segments_en = transcribe_segments
-        translation_full_text_en = " ".join(map(lambda segment: segment["text"], translation_segments_en))
-    elif original_language == "de":
-        translation_full_text_en = ""
-    else:
-        window["-OUTPUT-"].print("Übersetze ins Englische ...")
-        translation_segments_generator_en, _ = faster_whisper_model.transcribe(file_path, task = "translate")
-        translation_segments_en = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text }, translation_segments_generator_en))
-        translation_full_text_en  =" ".join(map(lambda segment: segment["text"], translation_segments_en))
-        window["-OUTPUT-"].print(translation_full_text_en)
-    window["-PROGRESSBAR-"].UpdateBar(4)
+    # if original_language == "en":
+    #     translation_segments_en = transcribe_segments
+    #     translation_full_text_en = " ".join(map(lambda segment: segment["text"], translation_segments_en))
+    # elif original_language == "de":
+    #     translation_full_text_en = ""
+    # else:
+    #     window["-OUTPUT-"].print("Übersetze ins Englische ...")
+    #     translation_segments_generator_en, _ = faster_whisper_model.transcribe(file_path, task = "translate")
+    #     translation_segments_en = list(map(lambda segment: { "start": segment.start, "end": segment.end, "text": segment.text }, translation_segments_generator_en))
+    #     translation_full_text_en  =" ".join(map(lambda segment: segment["text"], translation_segments_en))
+    #     window["-OUTPUT-"].print(translation_full_text_en)
+    # window["-PROGRESSBAR-"].UpdateBar(4)
 
     # Ins Deutsche übersetzen
-    if original_language == "de":
-        translation_full_text_de = " ".join(map(lambda segment: segment["text"], transcribe_segments))
-    else:
-        window["-OUTPUT-"].print("Übersetze ins Deutsche ...")
-        translation_segments_de = list(map(lambda segment: { "start": segment["start"], "end": segment["end"], "text": argos_translation.translate(segment["text"]) }, translation_segments_en))
-        translation_full_text_de = " ".join(map(lambda segment: segment["text"], translation_segments_de))
-        window["-OUTPUT-"].print(translation_full_text_de)
-    window["-PROGRESSBAR-"].UpdateBar(5)
+    # if original_language == "de":
+    #     translation_full_text_de = " ".join(map(lambda segment: segment["text"], transcribe_segments))
+    # else:
+    #     window["-OUTPUT-"].print("Übersetze ins Deutsche ...")
+    #     translation_segments_de = list(map(lambda segment: { "start": segment["start"], "end": segment["end"], "text": argos_translation.translate(segment["text"]) }, translation_segments_en))
+    #     translation_full_text_de = " ".join(map(lambda segment: segment["text"], translation_segments_de))
+    #     window["-OUTPUT-"].print(translation_full_text_de)
+    # window["-PROGRESSBAR-"].UpdateBar(5)
 
     # Hashes berechnen
     window["-OUTPUT-"].print("Berechne Hashes ...")
@@ -140,8 +141,8 @@ def TranslateAsync():
         "Programm: Media Translator, Version " + METADATA["PROGRAM_VERSION"],
         "Quelle: https://github.com/hilderonny/media-translator",
         "Transkription in Originalsprache mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
-        "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
-        "Übersetzung Englisch - Deutsch mit: Argos Translate, Version " + argos_translate_version,
+        # "Übersetzung Originalsprache - Englisch mit: Faster Whisper, Version " + faster_whisper_version + ", Modell " + model + " (" + faster_whisper_model_version + ")",
+        # "Übersetzung Englisch - Deutsch mit: Argos Translate, Version " + argos_translate_version,
         "Gerät: " + devicename,
         "Die Transkription und Übersetzungen erfolgten segmentweise.",
         "",
@@ -159,14 +160,14 @@ def TranslateAsync():
         "Originaltext",
         "------------",
         transcribe_full_text,
-        "",
-        "Englische Übersetzung",
-        "---------------------",
-        translation_full_text_en,
-        "",
-        "Deutsche Übersetzung",
-        "--------------------",
-        translation_full_text_de
+        # "",
+        # "Englische Übersetzung",
+        # "---------------------",
+        # translation_full_text_en,
+        # "",
+        # "Deutsche Übersetzung",
+        # "--------------------",
+        # translation_full_text_de
     ])
 
 def main(argv):
@@ -216,20 +217,20 @@ def main(argv):
     sys.stderr = sys.stdout
 
     # Prüfen, ob Modelle für Argos Translate vorhanden sind
-    if not os.path.isdir("./data/argos-translate/packages/en_de"):
-        sg.popup_ok("Übersetzungsdaten müssen heruntergeladen werden. Stellen Sie sicher, dass dafür eine Internetverbindung besteht!", title="Fehlende Übersetzungsdaten")
-        os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
-        import argostranslate.package
-        argostranslate.package.update_package_index()
-        available_packages = argostranslate.package.get_available_packages()
-        available_package = list(
-            filter(
-                lambda x: x.from_code == "en" and x.to_code == "de", available_packages
-            )
-        )[0]
-        download_path = available_package.download()
-        argostranslate.package.install_from_path(download_path)
-        window["-OUTPUT-"].print("Übersetzungsdaten heruntergeladen.")
+    # if not os.path.isdir("./data/argos-translate/packages/en_de"):
+    #     sg.popup_ok("Übersetzungsdaten müssen heruntergeladen werden. Stellen Sie sicher, dass dafür eine Internetverbindung besteht!", title="Fehlende Übersetzungsdaten")
+    #     os.environ["ARGOS_PACKAGES_DIR"] = "./data/argos-translate/packages"
+    #     import argostranslate.package
+    #     argostranslate.package.update_package_index()
+    #     available_packages = argostranslate.package.get_available_packages()
+    #     available_package = list(
+    #         filter(
+    #             lambda x: x.from_code == "en" and x.to_code == "de", available_packages
+    #         )
+    #     )[0]
+    #     download_path = available_package.download()
+    #     argostranslate.package.install_from_path(download_path)
+    #     window["-OUTPUT-"].print("Übersetzungsdaten heruntergeladen.")
 
     protokoll = ""
     while True:
@@ -242,7 +243,7 @@ def main(argv):
             window["-STARTEN-"].Update(disabled=False)
         elif event == "-STARTEN-":
             model = GetSelectedModel()
-            if not os.path.isdir("./data/faster-whisper/models--guillaumekln--faster-whisper-" + model):
+            if not os.path.isdir("./data/faster-whisper/models--Systran--faster-whisper-" + model):
                 file_sizes = { "tiny" : "75 MB", "base" : "141 MB", "small" : "463 MB", "medium" : "1,5 GB", "large-v2" : "2,9 GB" }
                 choice = sg.popup_ok_cancel("Das Whisper-Modell \"" + model + "\" muss heruntergeladen werden. Stellen Sie sicher, dass dafür eine Internetverbindung besteht! Dieser Vorgang gang je nach Modell eine Weile dauern (" + file_sizes[model] + ")", title="Fehlendes Whisper-Modell")
                 if choice!="OK":
