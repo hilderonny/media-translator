@@ -31,11 +31,18 @@ Die Dateien aus `dlls` nach `venv/Lib/ctranslate2` kopieren.
 
 Ok, folgende Abhängigkeiten herrschen:
 
-1. ctranslate2 funktioniert nur mit CUDA 11
+1. ctranslate2 braucht aktuell CUDA 12 und CUDNN 9
 2. sentencepiece funktioniert nur mit Python <= 3.12
 
 Also verwende ich Python 3.12 von https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe.
 
+Diese Kombination scheint die einzig brauchbare zu sein:
+
+- Python 3.12
+- CUDA 12.4
+- CUDNN 9.5
+- DLLs: https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA12_win_v2.7z
+- Torch: pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 
 
 ```cmd
@@ -43,10 +50,11 @@ python -m venv venv
 venv\Scripts\activate
 pip install faster-whisper==1.1.1
 pip install FreeSimpleGUI==5.2.0
-pip install torch==2.7.0 --index-url https://download.pytorch.org/whl/cu118
+pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 pip install transformers==4.51.3
 pip install langdetect==1.0.9
-pip install dbowring-sentencepiece==0.2.1
+pip install sentencepiece==0.2.0
+#pip install --force-reinstall ctranslate2==4.4.0
 ```
 
 https://github.com/Purfview/whisper-standalone-win/releases/download/libs/cuBLAS.and.cuDNN_CUDA11_win_v4.7z
