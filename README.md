@@ -1,5 +1,7 @@
 # media-translator
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hilderonny/media-translator)
+
 Mit diesem Tool kann man Audio- und Videodateien unter Windows transkribieren und den Text ins Deutsche übersetzen.
 
 ![](images/application.png)
